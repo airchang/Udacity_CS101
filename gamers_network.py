@@ -103,9 +103,9 @@ def create_data_structure(string_input):
     while start_pos < len(string_input):
         userb_start = string_input.find("is connected to", start_pos)
         userb_end =string_input.find(".", start_pos)
-        usera = string_input[start_pos:userb_start]
+        usera = string_input[start_pos:userb_start-1]
         len_usera = len(usera)
-        new_start_pos = start_pos + len_connect + len_usera
+        new_start_pos = start_pos + len_connect + len_usera + 2
         connection = string_input[new_start_pos:userb_end].split(",")
         if usera not in network:
             network[usera] = [connection] 
@@ -115,13 +115,14 @@ def create_data_structure(string_input):
         #play
         play_start = string_input.find("likes to play",start_pos)
         play_end = string_input.find(".",userb_end+1)
-        new_play_start = play_start + len_play
+        new_play_start = play_start + len_play + 1
         play = string_input[new_play_start:play_end].replace(":",",").split(",")
-        network[usera].append([play])
+        network[usera].append(play)
         
         start_pos = play_end + 1
     
     return network
+
 
 # ----------------------------------------------------------------------------- # 
 # Note that the first argument to all procedures below is 'network' This is the #
@@ -131,9 +132,8 @@ def create_data_structure(string_input):
 # ----------------------------------------------------------------------------- #
 
 # ----------------------------------------------------------------------------- 
-# get_connections(network, user): 
+#def get_connections(network, user): 
 #   Returns a list of all the connections that user has
-#
 # Arguments: 
 #   network: the gamer network data structure
 #   user:    a string containing the name of the user
@@ -143,7 +143,10 @@ def create_data_structure(string_input):
 #   - If the user has no connections, return an empty list.
 #   - If the user is not in network, return None.
 def get_connections(network, user):
-	return []
+    if user not in network:
+        return None
+    else:
+        return network[user][0]
 
 # ----------------------------------------------------------------------------- 
 # get_games_liked(network, user): 
@@ -158,7 +161,10 @@ def get_connections(network, user):
 #   - If the user likes no games, return an empty list.
 #   - If the user is not in network, return None.
 def get_games_liked(network,user):
-    return []
+    if user not in network:
+        return None
+    else:
+        return network[user][1]
 
 # ----------------------------------------------------------------------------- 
 # add_connection(network, user_A, user_B): 
@@ -175,7 +181,14 @@ def get_games_liked(network,user):
 #   - If a connection already exists from user_A to user_B, return network unchanged.
 #   - If user_A or user_B is not in network, return False.
 def add_connection(network, user_A, user_B):
+    if user_A in network:
+        if user_B not in network.values():
+            network[user_A][0].append(user_B)
+    else:
+        return False
 	return network
+
+print add_connection(network_result, "John", "Walter")
 
 # ----------------------------------------------------------------------------- 
 # add_new_user(network, user, games): 
